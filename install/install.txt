@@ -1,0 +1,24 @@
+To install:
+
+-> Make the following directories:
+	-> /etc/apachetrans
+	-> /usr/share/apachetrans
+	-> /var/log/apachetrans
+	
+-> Copy 
+	-> install/application.conf into /etc/apachetrans
+	-> install/apachetrans.jar into /usr/share/apachetrans
+	-> install/apachetrans.sh into /etc/init.d/
+
+-> Modify /etc/apachetrans/application.conf to specify:
+	-> graphiteHost
+	-> graphitePort
+	-> metricPath
+	-> executionTime
+	-> apacheUrl
+	
+-> chmod +x /etc/init.d/apachetrans.sh
+
+-> Propre usage is as follows:
+	-> /etc/init.d/apachetrans.sh (start|stop|restart|status)
+	
