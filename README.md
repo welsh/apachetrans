@@ -7,6 +7,13 @@ Install
 -------------
 To Install, read the install/install.txt file.
 
+To Use
+-------------
+Once installed, usage is as follows:
+
+    sudo /etc/init.d/apachetrans {start|stop|restart|status}
+
+
 To Do
 -------------
 1. Create Proper Install Method (RPM?)
