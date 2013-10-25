@@ -101,7 +101,7 @@ case $1 in
                 status
         ;;
         *)
-                echo $"Usage: $0 {start|stop|restart|status} [filename.json]"
+                echo $"Usage: $0 {start|stop|restart|status}"
         ;;
 esac
 
