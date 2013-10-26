@@ -1,5 +1,7 @@
 package org.welsh.graphite.apachetrans.jobs;
 
+import java.util.List;
+
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -7,6 +9,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.welsh.graphite.apachetrans.constants.Config;
+import org.welsh.graphite.apachetrans.domain.ApacheServer;
 import org.welsh.graphite.apachetrans.domain.ApacheStatus;
 import org.welsh.graphite.apachetrans.util.ApacheConnector;
 import org.welsh.graphite.apachetrans.util.GraphiteConnector;
@@ -20,20 +23,24 @@ public class ServerJob implements Job {
 		
 		try {
 			JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
-			String metricPath = (String) jobDataMap.get(Config.METRIC_PATH);
-			String apacheUrl = (String) jobDataMap.get(Config.APACHE_URL);
+			List<ApacheServer> apacheServers = (List<ApacheServer>) jobDataMap.get(Config.APACHE_SERVERS);
 			
 			String graphiteHost = (String) jobDataMap.get(Config.GRAPHITE_HOST);
 			Integer graphitePort = (Integer) jobDataMap.get(Config.GRAPHITE_PORT);
 			
-			log.info("Getting Apache Info From: " + apacheUrl);
-			ApacheConnector apacheConnector = new ApacheConnector(apacheUrl);
-			ApacheStatus apacheStatus = apacheConnector.getApacheStatus();
-			
-			log.info("Sending To: " + graphiteHost + ":" + graphitePort + "/" + metricPath);
-			GraphiteConnector graphiteConnector = new GraphiteConnector(graphiteHost, graphitePort);
-			String message = graphiteConnector.createGraphiteMessage(apacheStatus, metricPath);
-			graphiteConnector.logToGraphite(message);
+			for(ApacheServer apacheServer : apacheServers) {
+				String metricPath = apacheServer.getMetricPath();
+				String apacheUrl = apacheServer.getApacheUrl();
+				
+				log.info("Getting Apache Info From: " + apacheUrl);
+				ApacheConnector apacheConnector = new ApacheConnector(apacheUrl);
+				ApacheStatus apacheStatus = apacheConnector.getApacheStatus();
+				
+				log.info("Sending To: " + graphiteHost + ":" + graphitePort + "/" + metricPath);
+				GraphiteConnector graphiteConnector = new GraphiteConnector(graphiteHost, graphitePort);
+				String message = graphiteConnector.createGraphiteMessage(apacheStatus, metricPath);
+				graphiteConnector.logToGraphite(message);
+			}
 			
 		} catch (Exception e) {
 			log.error("Job Execution Failed. Stacktrace to follow.", e);

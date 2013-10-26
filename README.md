@@ -17,7 +17,6 @@ Once installed, usage is as follows:
 To Do
 -------------
 1. Create Proper Install Method (RPM?)
-2. Allow passing environment variables like `-Dapachetrans.conf.dir=/etc/apachetrans/` and `-Dapachetrans.log.dir-/var/log/apachetrans`
+2. Allow passing environment variable for `-Dapachetrans.log.dir-/var/log/apachetrans`
 3. Unit tests with Faux Apache & Graphite using Somelike like Grizley from Jersey to receive and send to
-4. Modify Config to do Apache objects with metric path + apache url and then allow disabling of specific metrics
-5. Fix logging to not output all the default logstash items at startup or switch to log4j2
+4. Fix logging to not output all the default logstash items at startup or switch to log4j2

@@ -19,21 +19,25 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.jdbcjobstore.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.welsh.graphite.apachetrans.constants.Config;
 import org.welsh.graphite.apachetrans.jobs.ServerJob;
+import org.welsh.graphite.apachetrans.util.ConfigUtility;
+import org.welsh.graphite.apachetrans.util.InvalidConfigurationException;
 
 public class ApplicationRuntime {
 
 	private static final Logger log = LoggerFactory.getLogger(ApplicationRuntime.class);
 	
-	public static void main(String[] args) throws SchedulerException, FileNotFoundException, IOException, ParseException {
+	public static void main(String[] args) throws SchedulerException, FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
 		log.info("Starting apachetrans");
 		
 		ApplicationRuntime appRuntime = new ApplicationRuntime();
 		
-		Map<String, Object> config = appRuntime.readConfig();
+		ConfigUtility configUtility = new ConfigUtility();
+		Map<String, Object> config = configUtility.getAppSettings();
 		log.info("Config: " + config);
 		
 		appRuntime.startJob(config);
@@ -41,23 +45,6 @@ public class ApplicationRuntime {
 	
 	public ApplicationRuntime() {
 		
-	}
-	
-	public Map<String, Object> readConfig() throws FileNotFoundException, IOException, ParseException {
-		JSONParser parser = new JSONParser();
-		Object obj = parser.parse(new FileReader("/etc/apachetrans/application.conf"));
-		 
-		JSONObject jsonObject = (JSONObject) obj;
-		
-		Map<String, Object> context = new HashMap<String, Object>();
-		
-		context.put(Config.EXECUTION_TIME, ((Long) jsonObject.get(Config.EXECUTION_TIME)).intValue());
-		context.put(Config.METRIC_PATH, (String) jsonObject.get(Config.METRIC_PATH));
-		context.put(Config.APACHE_URL, (String) jsonObject.get(Config.APACHE_URL));
-		context.put(Config.GRAPHITE_HOST, (String) jsonObject.get(Config.GRAPHITE_HOST));
-		context.put(Config.GRAPHITE_PORT, ((Long) jsonObject.get(Config.GRAPHITE_PORT)).intValue());
-
-		return context;
 	}
 	
 	public void startJob(Map<String, Object> context) throws SchedulerException {
