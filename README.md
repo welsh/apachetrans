@@ -30,7 +30,7 @@ B. Make the following directories:
 
     sudo mkdir -p /etc/apachetrans /usr/share/apachetrans /var/log/apachetrans
 
-C. Copy
+C. Copy install files into location:
 
     sudo cp install/application.conf /etc/apachetrans
     sudo cp install/apachetrans.jar /usr/share/apachetrans
@@ -49,7 +49,7 @@ E. Add Execute privilege to the `/etc/init.d/` script:
 
     chmod +x /etc/init.d/apachetrans.sh
 
-F. Start apachetrans with:
+F. Start `apachetrans` with:
 
     /etc/init.d/apachetrans.sh start
     
