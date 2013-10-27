@@ -5,13 +5,9 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -19,7 +15,6 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.jdbcjobstore.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.welsh.graphite.apachetrans.constants.Config;
@@ -28,26 +23,25 @@ import org.welsh.graphite.apachetrans.util.ConfigUtility;
 import org.welsh.graphite.apachetrans.util.InvalidConfigurationException;
 
 public class ApplicationRuntime {
+	
+	private Map<String, Object> context;
 
 	private static final Logger log = LoggerFactory.getLogger(ApplicationRuntime.class);
 	
 	public static void main(String[] args) throws SchedulerException, FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
 		log.info("Starting apachetrans");
 		
-		ApplicationRuntime appRuntime = new ApplicationRuntime();
-		
+		ApplicationRuntime appRuntime = new ApplicationRuntime();		
+		appRuntime.startJob();
+	}
+	
+	public ApplicationRuntime() throws FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
 		ConfigUtility configUtility = new ConfigUtility();
-		Map<String, Object> config = configUtility.getAppSettings();
-		log.info("Config: " + config);
-		
-		appRuntime.startJob(config);
+		context = configUtility.getAppSettings();
+		log.info("Config: " + context);
 	}
 	
-	public ApplicationRuntime() {
-		
-	}
-	
-	public void startJob(Map<String, Object> context) throws SchedulerException {
+	public void startJob() throws SchedulerException {
 		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 		Scheduler scheduler = schedulerFactory.getScheduler();
 		
@@ -73,5 +67,9 @@ public class ApplicationRuntime {
 	    scheduler.scheduleJob(job, trigger);
 	    
 	    scheduler.start();
+	}
+
+	public Map<String, Object> getContext() {
+		return context;
 	}
 }

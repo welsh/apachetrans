@@ -24,6 +24,7 @@ public class ConfigUtility {
 
 	private Map<String, Object> appSettings; 
 	
+	@SuppressWarnings("unchecked")
 	public ConfigUtility() throws FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
 		appSettings = new HashMap<String, Object>();
 		
@@ -80,6 +81,51 @@ public class ConfigUtility {
 				ApacheServer apacheServer = new ApacheServer(
 						(String) apacheServerJson.get(Config.APACHE_URL), 
 						(String) apacheServerJson.get(Config.METRIC_PATH));
+				
+				Object tmp = apacheServerJson.get(Config.TOTAL_ACCESSES);
+				if(tmp != null) {
+					apacheServer.setReportTotalAccesses((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.TOTAL_KBYTES);
+				if(tmp != null) {
+					apacheServer.setReportTotalkBytes((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.CPU_LOAD);
+				if(tmp != null) {
+					apacheServer.setReportCpuLoad((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.UPTIME);
+				if(tmp != null) {
+					apacheServer.setReportUptime((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.REQ_PER_SEC);
+				if(tmp != null) {
+					apacheServer.setReportReqPerSec((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.BYTES_PER_SEC);
+				if(tmp != null) {
+					apacheServer.setReportBytesPerSec((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.BYTES_PER_REQ);
+				if(tmp != null) {
+					apacheServer.setReportBytesPerReq((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.BUSY_WORKERS);
+				if(tmp != null) {
+					apacheServer.setReportBusyWorkers((Boolean) tmp);
+				}
+				
+				tmp = apacheServerJson.get(Config.IDLE_WORKERS);
+				if(tmp != null) {
+					apacheServer.setReportIdleWorkers((Boolean) tmp);
+				}
 				
 				apacheServers.add(apacheServer);
 			}

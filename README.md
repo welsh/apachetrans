@@ -68,8 +68,4 @@ Once installed, script usage is as follows:
 To Do
 -------------
 1. Create Proper Install Method (RPM?)
-2. Fix Logging
-    - not output all the default logstash items at startup or switch to log4j2
-    - Allow passing environment variable for `-Dapachetrans.log.dir-/var/log/apachetrans`
-3. Unit tests with Faux Apache & Graphite using Somelike like Grizley from Jersey to receive and send to
-4. Allow over-ride disable for all the `server-status` points.
+2. Tidy up how config is read

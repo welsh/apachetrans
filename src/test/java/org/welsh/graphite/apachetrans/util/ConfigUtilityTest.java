@@ -16,7 +16,6 @@ public class ConfigUtilityTest {
 
 	@Before
 	public void setUp() throws Exception {	
-		log.info("");
 	}
 
 	@After
@@ -31,6 +30,8 @@ public class ConfigUtilityTest {
 			System.setProperty(Config.SYS_CONF_PROPERTY, TEST_FILE);
 			ConfigUtility configUtility = new ConfigUtility();
 			assertNotNull(configUtility);
+			
+			log.info(configUtility.getAppSettings().toString());
 		} catch (Exception e) {
 			log.error("Test Failed.", e);
 		}

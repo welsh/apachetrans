@@ -2,56 +2,51 @@ package org.welsh.graphite.apachetrans.util;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
+import java.io.IOException;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.welsh.graphite.apachetrans.domain.ApacheStatus;
+import org.welsh.graphite.apachetrans.mock.MockGraphiteServerFactory;
+
+import com.sun.net.httpserver.HttpServer;
 
 public class GraphiteConnectorTest {
 	
 	private static Logger log = LoggerFactory.getLogger(GraphiteConnectorTest.class);
 
-	private ApacheStatus apacheStatus; 
-	private GraphiteConnector graphiteConnector;
+	private final static String GRAPHITE_HOST = "127.0.0.1";
+	private final static String GRAPHITE_METRIC = "nci.prod.app01";
+	private final static int GRAPHITE_PORT_ONLINE = 2003;
+	private final static int GRAPHITE_PORT_OFFLINE = 10000;
 	
-	private final String GRAPHITE_HOST = "192.168.1.210";
-	private final int    GRAPHITE_PORT = 2003;
-
-	@Before
-	public void setUp() throws Exception {
+	private static ApacheStatus apacheStatus; 
+	private static HttpServer graphiteServer;
+	
+	@BeforeClass
+	public static void beforeClass() throws IOException {
 		apacheStatus = new ApacheStatus("215", "1133", "3207", ".00498909", ".0670408", "361.769", "5396.24", "1", "7");
-		graphiteConnector = new GraphiteConnector(GRAPHITE_HOST, GRAPHITE_PORT);
 		
-		log.info("");
+		graphiteServer = MockGraphiteServerFactory.createHttpServer(GRAPHITE_PORT_ONLINE);
+		graphiteServer.start();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void testCreateGraphiteMessage() {
-		log.info("STARTING: testCreateGraphiteMessage()");
-		
-		String graphiteMessage = graphiteConnector.createGraphiteMessage(apacheStatus, "nci.prod.app01");
-		
-		assertNotNull(graphiteMessage);
-		
-		log.info("Graphite Message: " + graphiteMessage);
-		
-		log.info("FINISHED: testCreateGraphiteMessage()\n");
+	@AfterClass
+	public static void afterClass() throws InterruptedException {
+		graphiteServer.stop(0);
 	}
 
 	@Test
-	public void testLogToGraphite() {
-		log.info("STARTING: testLogToGraphite()");
+	public void testLogToGraphiteOnline() {
+		log.info("STARTING: testLogToGraphiteOnline()");
 		
-		String graphiteMessage = graphiteConnector.createGraphiteMessage(apacheStatus, "nci.prod.app01");
+		GraphiteConnector graphiteConnector = new GraphiteConnector(GRAPHITE_HOST, GRAPHITE_PORT_ONLINE);
 
 		try {
-			graphiteConnector.logToGraphite(graphiteMessage);
+			graphiteConnector.logToGraphite(apacheStatus, GRAPHITE_METRIC);
 			
 			assertTrue(true);
 		} catch (Exception e) {
@@ -60,6 +55,25 @@ public class GraphiteConnectorTest {
 			fail();
 		}
 		
-		log.info("FINISHED: testLogToGraphite()\n");
+		log.info("FINISHED: testLogToGraphiteOnline()");
+	}
+	
+	@Test
+	public void testLogToGraphiteOffline() {
+		log.info("STARTING: testLogToGraphiteOffline()");
+		
+		GraphiteConnector graphiteConnector = new GraphiteConnector(GRAPHITE_HOST, GRAPHITE_PORT_OFFLINE);
+
+		try {
+			graphiteConnector.logToGraphite(apacheStatus, GRAPHITE_METRIC);
+			
+			assertTrue(true);
+		} catch (Exception e) {
+			log.error("Error Pushing to Graphite Host [{}:{}]", graphiteConnector.getGraphiteHost(),  graphiteConnector.getGraphitePort());
+			log.error("Stacktrace:", e);
+			fail();
+		}
+		
+		log.info("FINISHED: testLogToGraphiteOffline()");
 	}
 }

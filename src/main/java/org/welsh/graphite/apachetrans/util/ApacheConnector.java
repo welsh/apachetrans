@@ -9,6 +9,8 @@ import org.welsh.graphite.apachetrans.constants.ServerStatus;
 import org.welsh.graphite.apachetrans.domain.ApacheStatus;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class ApacheConnector {
@@ -21,6 +23,8 @@ public class ApacheConnector {
 	}
 	
 	public ApacheStatus getApacheStatus() {
+		log.debug("Getting Status for Page: " + url);
+		
 		ApacheStatus apacheStatus = new ApacheStatus();
 
 		Map<String, String> parsed = parsePage();
@@ -48,18 +52,29 @@ public class ApacheConnector {
 		
 		Client client = Client.create();
 		WebResource webResource = client.resource(url);
-		String response = webResource.get(String.class);
 		
-		log.debug("Response: \n" + response);
-		
-		String[] responseLines = response.split("\n");
-		
-		for (String line : responseLines) {
-			String[] keyValue = line.split(":");
+		try {
+			ClientResponse clientResponse = webResource.get(ClientResponse.class);
+			String response = clientResponse.getEntity(String.class);
 			
-			if(keyValue.length == 2) {
-				results.put(keyValue[0].trim(), keyValue[1].trim());
+			if(clientResponse.getStatus() == 200) {		
+				log.debug("Response: \n" + response);
+				
+				String[] responseLines = response.split("\n");
+				
+				for (String line : responseLines) {
+					String[] keyValue = line.split(":");
+					
+					if(keyValue.length == 2) {
+						results.put(keyValue[0].trim(), keyValue[1].trim());
+					}
+				}
+			} else {
+				log.error("None 200 Response Code Recevied. Received [{}]", clientResponse.getStatus());
+				log.error("Response: \n" + response);
 			}
+		} catch (ClientHandlerException e) {
+			log.error(e.getLocalizedMessage());
 		}
 		
 		return results;

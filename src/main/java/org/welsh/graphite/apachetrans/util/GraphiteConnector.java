@@ -2,6 +2,7 @@ package org.welsh.graphite.apachetrans.util;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.ConnectException;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -20,20 +21,27 @@ public class GraphiteConnector {
 		this.graphitePort = graphitePort;
 	}
 
-	public void logToGraphite(String msg) throws Exception {
-		Socket socket = new Socket(graphiteHost, graphitePort);
+	public void logToGraphite(ApacheStatus apacheStatus, String metricPath) throws Exception {
+		log.debug("Sending Message To: {}:{}", graphiteHost, graphitePort);
+		String msg = createGraphiteMessage(apacheStatus, metricPath);
 		
 		try {
-			Writer writer = new OutputStreamWriter(socket.getOutputStream());
-			writer.write(msg);
-			writer.flush();
-			writer.close();
-		} finally {
-			socket.close();
+			Socket socket = new Socket(graphiteHost, graphitePort); 
+			
+			try {
+				Writer writer = new OutputStreamWriter(socket.getOutputStream());
+				writer.write(msg);
+				writer.flush();
+				writer.close();
+			} finally {
+				socket.close();
+			}
+		} catch (ConnectException e) {
+			log.error(e.getLocalizedMessage());
 		}
 	}
 
-	public String createGraphiteMessage(ApacheStatus apacheStatus, String metricPath) {
+	private String createGraphiteMessage(ApacheStatus apacheStatus, String metricPath) {
 		long epoch = System.currentTimeMillis()/1000;
 		
 		StringBuilder message = new StringBuilder();

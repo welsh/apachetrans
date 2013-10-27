@@ -38,8 +38,7 @@ public class ServerJob implements Job {
 				
 				log.info("Sending To: " + graphiteHost + ":" + graphitePort + "/" + metricPath);
 				GraphiteConnector graphiteConnector = new GraphiteConnector(graphiteHost, graphitePort);
-				String message = graphiteConnector.createGraphiteMessage(apacheStatus, metricPath);
-				graphiteConnector.logToGraphite(message);
+				graphiteConnector.logToGraphite(apacheStatus, metricPath);
 			}
 			
 		} catch (Exception e) {
