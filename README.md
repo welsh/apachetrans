@@ -20,6 +20,8 @@ Install
 -------------
 The following are the current rough install steps:
 
+Note: It is recommended you have the environment variable of $JAVA_HOME set.
+
 A. Clone the repo:
 
     cd ~
@@ -67,5 +69,13 @@ Once installed, script usage is as follows:
 
 To Do
 -------------
-1. Create Proper Install Method (RPM?)
-2. Tidy up how config is read
+1. Create Proper Install Method. Started on RPM, Needs fine Tuning. (Maybe run under new user)
+2. Look into logging again. Still going to console with jar in install/. (Also into log rolling)
+3. Fix up /etc/init.d script. (PID file cleanup / checks need to be done.)
+4. Look into setting up under different user
+5. Tidy up how config is read
+6. Update ConfigUtility & ConfigUtilityTest to:
+    - Take in file name over-ride
+    - Cover more test cases
+    - Use relative testing paths so unit tests pass on unix
+
