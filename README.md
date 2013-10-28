@@ -22,6 +22,36 @@ The following are the current rough install steps:
 
 Note: It is recommended you have the environment variable of $JAVA_HOME set.
 
+### RPM Method
+
+A. Download:
+
+    install/apachetrans-1.0-1.noarch.rpm
+
+B. Install it by going:
+
+    rpm -ivh apachetrans-1.0-1.noarch.rpm
+
+C. Modify `/etc/apachetrans/application.conf` to specify:
+
+    graphiteHost
+    graphitePort
+    executionTime
+    apaches:
+        metricPath
+        apacheUrl
+
+D. Start `apachetrans` with:
+
+    /etc/init.d/apachetrans.sh start
+
+E. If you see no errors, it has started up correct. You can follow the log:
+
+    tail -f /var/log/apachetrans/output.log
+
+
+### Non-RPM Method
+
 A. Clone the repo:
 
     cd ~
@@ -69,12 +99,10 @@ Once installed, script usage is as follows:
 
 To Do
 -------------
-1. Create Proper Install Method. Started on RPM, Needs fine Tuning. (Maybe run under new user)
-2. Look into logging again. Still going to console with jar in install/. (Also into log rolling)
-3. Fix up /etc/init.d script. (PID file cleanup / checks need to be done.)
-4. Look into setting up under different user
-5. Tidy up how config is read
-6. Update ConfigUtility & ConfigUtilityTest to:
+1. Fix up /etc/init.d script. (PID file cleanup / checks need to be done.)
+2. Look into setting up under different user
+3. Tidy up how config is read
+4. Update ConfigUtility & ConfigUtilityTest to:
     - Take in file name over-ride
     - Cover more test cases
     - Use relative testing paths so unit tests pass on unix

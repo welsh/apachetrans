@@ -7,6 +7,10 @@ BASE_DIR=$(pwd)
 echo "[Info] Starting Build Process"
 
 echo "[Info]"
+echo "[Info] Moving logback-test.xml out of the way temporarily."
+mv src/main/resources/logback-test.xml ./
+
+echo "[Info]"
 echo "[Info] Building Jar"
 mvn clean package -Dmaven.test.skip=true
 
@@ -62,6 +66,19 @@ rpm -qpl RPMS/noarch/$NAME-$VER-1.noarch.rpm
 echo "[Info]"
 echo "[Info] Cleaning up output file."
 rm $BASE_DIR/install/output.log
+
+echo "[Info]"
+echo "[Info] Moving logback-text.xml back"
+cd $BASE_DIR
+mv logback-test.xml src/main/resources/
+
+echo "[Info]"
+echo "[Info] Moving built RPM into install folder."
+cp rpm/RPMS/noarch/*.rpm install/
+
+echo "[Info]"
+echo "[Info] Moving built Jar into install folder."
+cp target/apachetrans.jar install/
 
 echo "[Info]"
 echo "[Info] Done."
