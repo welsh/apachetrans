@@ -25,27 +25,20 @@ public class ConfigUtility {
 	private Map<String, Object> appSettings; 
 	
 	@SuppressWarnings("unchecked")
-	public ConfigUtility() throws FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
+	public ConfigUtility() {
+
+	}
+	
+	public void loadConfiguration() throws InvalidConfigurationException, FileNotFoundException, IOException, ParseException {
 		appSettings = new HashMap<String, Object>();
 		
-		String baseDir = System.getProperty(Config.SYS_CONF_PROPERTY);
+		String confFile = determineFolderPath() + determineFileName();
 		
-		if(baseDir == null) {
-			baseDir = Config.DEFAULT_CONF_DIR;
-			log.debug("Defaulting to default baseDir.");
-		} else {
-			log.debug("Using System Property " + Config.SYS_CONF_PROPERTY);
-		}
-		
-		log.debug("baseDir: " + baseDir);
-		
-		if(!baseDir.endsWith("/")) {
-			baseDir += "/";
-		}
+		log.debug("Conf File: " + confFile);
 		
 		JSONParser parser = new JSONParser();
 		
-		Object obj = parser.parse(new FileReader(baseDir + Config.CONF_FILE));
+		Object obj = parser.parse(new FileReader(confFile));
 		JSONObject jsonObject = (JSONObject) obj;
 		
 		Long executionTime = (Long) jsonObject.get(Config.EXECUTION_TIME);
@@ -55,7 +48,6 @@ public class ConfigUtility {
 		}
 
 		appSettings.put(Config.EXECUTION_TIME, executionTime.intValue());
-		
 		appSettings.put(Config.GRAPHITE_HOST, (String) jsonObject.get(Config.GRAPHITE_HOST));
 		
 		try {
@@ -64,7 +56,7 @@ public class ConfigUtility {
 				appSettings.put(Config.GRAPHITE_PORT, graphitePort.intValue());
 			}
 		} catch (Exception e ) {
-			log.error("Error Parsing Integer from '" + Config.GRAPHITE_PORT + "' From " + Config.CONF_FILE);
+			log.error("Error Parsing Integer from '" + Config.GRAPHITE_PORT + "' From " + confFile);
 			log.error("Correct format is \"graphitePort\" : 2003,");
 		}
 		
@@ -76,82 +68,114 @@ public class ConfigUtility {
 			Iterator<JSONObject> iterator = apacheServersJson.iterator();
 			
 			while (iterator.hasNext()) {
-				JSONObject apacheServerJson = iterator.next();
-				
-				ApacheServer apacheServer = new ApacheServer(
-						(String) apacheServerJson.get(Config.APACHE_URL), 
-						(String) apacheServerJson.get(Config.METRIC_PATH));
-				
-				Object tmp = apacheServerJson.get(Config.TOTAL_ACCESSES);
-				if(tmp != null) {
-					apacheServer.setReportTotalAccesses((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.TOTAL_KBYTES);
-				if(tmp != null) {
-					apacheServer.setReportTotalkBytes((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.CPU_LOAD);
-				if(tmp != null) {
-					apacheServer.setReportCpuLoad((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.UPTIME);
-				if(tmp != null) {
-					apacheServer.setReportUptime((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.REQ_PER_SEC);
-				if(tmp != null) {
-					apacheServer.setReportReqPerSec((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.BYTES_PER_SEC);
-				if(tmp != null) {
-					apacheServer.setReportBytesPerSec((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.BYTES_PER_REQ);
-				if(tmp != null) {
-					apacheServer.setReportBytesPerReq((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.BUSY_WORKERS);
-				if(tmp != null) {
-					apacheServer.setReportBusyWorkers((Boolean) tmp);
-				}
-				
-				tmp = apacheServerJson.get(Config.IDLE_WORKERS);
-				if(tmp != null) {
-					apacheServer.setReportIdleWorkers((Boolean) tmp);
-				}
-				
-				apacheServers.add(apacheServer);
+				apacheServers.add(parseApacheServer(iterator.next()));
 			}
 			
 			appSettings.put(Config.APACHE_SERVERS, apacheServers);
 		}
 		
-		validateConfiguration();
+		validateConfiguration(confFile);
+	}
+	
+	public String determineFolderPath() {
+		String baseDir = System.getProperty(Config.SYS_CONF_DIR_PROPERTY);
+		
+		if(baseDir == null) {
+			baseDir = Config.DEFAULT_CONF_DIR;
+			log.debug("Defaulting to default baseDir.");
+		} else {
+			log.debug("Using System Property " + Config.SYS_CONF_DIR_PROPERTY);
+		}
+
+		if(!baseDir.endsWith("/")) {
+			baseDir += "/";
+		}
+		
+		return baseDir;
+	}
+	
+	public String determineFileName() {
+		String fileName = System.getProperty(Config.SYS_CONF_FILE_PROPERTY);
+		
+		if(fileName == null) {
+			fileName = Config.DEFAULT_CONF_FILE;
+			log.debug("Defaulting to default confFile.");
+		} else {
+			log.debug("Using System Property " + Config.SYS_CONF_FILE_PROPERTY);
+		}
+		
+		return fileName;
+	}
+	
+	private ApacheServer parseApacheServer(JSONObject apacheServerJson) {
+		ApacheServer apacheServer = new ApacheServer(
+				(String) apacheServerJson.get(Config.APACHE_URL), 
+				(String) apacheServerJson.get(Config.METRIC_PATH));
+		
+		Object tmp = apacheServerJson.get(Config.TOTAL_ACCESSES);
+		if(tmp != null) {
+			apacheServer.setReportTotalAccesses((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.TOTAL_KBYTES);
+		if(tmp != null) {
+			apacheServer.setReportTotalkBytes((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.CPU_LOAD);
+		if(tmp != null) {
+			apacheServer.setReportCpuLoad((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.UPTIME);
+		if(tmp != null) {
+			apacheServer.setReportUptime((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.REQ_PER_SEC);
+		if(tmp != null) {
+			apacheServer.setReportReqPerSec((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.BYTES_PER_SEC);
+		if(tmp != null) {
+			apacheServer.setReportBytesPerSec((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.BYTES_PER_REQ);
+		if(tmp != null) {
+			apacheServer.setReportBytesPerReq((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.BUSY_WORKERS);
+		if(tmp != null) {
+			apacheServer.setReportBusyWorkers((Boolean) tmp);
+		}
+		
+		tmp = apacheServerJson.get(Config.IDLE_WORKERS);
+		if(tmp != null) {
+			apacheServer.setReportIdleWorkers((Boolean) tmp);
+		}
+		
+		return apacheServer;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void validateConfiguration() throws InvalidConfigurationException {
+	private void validateConfiguration(String confFile) throws InvalidConfigurationException {
 		if(appSettings.get(Config.GRAPHITE_HOST) == null) {
-			throw new InvalidConfigurationException("Missing '" + Config.GRAPHITE_HOST + "' From " + Config.CONF_FILE);
+			throw new InvalidConfigurationException("Missing '" + Config.GRAPHITE_HOST + "' From " + confFile);
 		}
 		
 		if(appSettings.get(Config.GRAPHITE_PORT) == null) {
-			throw new InvalidConfigurationException("Missing '" + Config.GRAPHITE_PORT + "' From " + Config.CONF_FILE);
+			throw new InvalidConfigurationException("Missing '" + Config.GRAPHITE_PORT + "' From " + confFile);
 		}
 		
 		if(appSettings.get(Config.APACHE_SERVERS) == null) {
-			throw new InvalidConfigurationException("Missing '" + Config.APACHE_SERVERS + "' From " + Config.CONF_FILE);
+			throw new InvalidConfigurationException("Missing '" + Config.APACHE_SERVERS + "' From " + confFile);
 		}
 		
 		if(((List<ApacheServer>) appSettings.get(Config.APACHE_SERVERS)).isEmpty()) {
-			throw new InvalidConfigurationException("Missing '" + Config.APACHE_SERVERS + "' From " + Config.CONF_FILE);
+			throw new InvalidConfigurationException("Missing '" + Config.APACHE_SERVERS + "' From " + confFile);
 		}
 	}
 

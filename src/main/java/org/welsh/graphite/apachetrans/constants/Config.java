@@ -25,17 +25,15 @@ public class Config {
 	/**
 	 * System Properties 
 	 */
-	public static final String SYS_CONF_PROPERTY = "apachetrans.conf.dir";
+	public static final String SYS_CONF_DIR_PROPERTY = "apachetrans.conf.dir";
+	public static final String SYS_CONF_FILE_PROPERTY = "apachetrans.conf.file";
+	
 	
 	/**
 	 * Defaults
 	 */
 	public static final String DEFAULT_CONF_DIR = "/etc/apachetrans";
+	public static final String DEFAULT_CONF_FILE = "application.conf";
 	public static final Long   DEFAULT_EXECUTION_TIME = 5L;
-	
-	/**
-	 * Config File Name
-	 */
-	public static final String CONF_FILE = "application.conf";
 }
              

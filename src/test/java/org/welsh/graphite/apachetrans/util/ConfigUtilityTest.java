@@ -12,7 +12,8 @@ import org.welsh.graphite.apachetrans.constants.Config;
 public class ConfigUtilityTest {
 	
 	private static Logger log = LoggerFactory.getLogger(ConfigUtilityTest.class);
-	private final String TEST_FILE = "C:/SELF/Other/apachetrans/src/test/resources";
+	private final String TEST_DIR = "conf-files/";
+	private final String TEST_CONF_1 = "application-1.conf";
 
 	@Before
 	public void setUp() throws Exception {	
@@ -27,8 +28,10 @@ public class ConfigUtilityTest {
 		log.info("STARTING: testConfigUtility()");
 		
 		try {
-			System.setProperty(Config.SYS_CONF_PROPERTY, TEST_FILE);
+			System.setProperty(Config.SYS_CONF_DIR_PROPERTY, TEST_DIR);
+			System.setProperty(Config.SYS_CONF_FILE_PROPERTY, TEST_CONF_1);
 			ConfigUtility configUtility = new ConfigUtility();
+			configUtility.loadConfiguration();
 			assertNotNull(configUtility);
 			
 			log.info(configUtility.getAppSettings().toString());

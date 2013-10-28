@@ -37,6 +37,7 @@ public class ApplicationRuntime {
 	
 	public ApplicationRuntime() throws FileNotFoundException, IOException, ParseException, InvalidConfigurationException {
 		ConfigUtility configUtility = new ConfigUtility();
+		configUtility.loadConfiguration();
 		context = configUtility.getAppSettings();
 		log.info("Config: " + context);
 	}

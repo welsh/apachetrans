@@ -81,5 +81,28 @@ echo "[Info] Moving built Jar into install folder."
 cp target/apachetrans.jar install/
 
 echo "[Info]"
+echo "[Info] Making apachetrans release zip."
+cd install
+mkdir apachetrans
+cp apachetrans.jar apachetrans/
+cp apachetrans.sh apachetrans/
+cp application.conf apachetrans/
+zip apachetrans-X.zip apachetrans/*
+rm -rf apachetrans
+rm -f apachetrans.jar
+
+echo "[Info]"
+echo "[Info] Moving into release-artifact folder"
+cd $BASE_DIR
+rm -rf release-artifact
+mkdir -p release-artifact
+mv install/apachetrans-X.zip release-artifact/
+mv install/*.rpm release-artifact/
+
+echo "[Info]"
+echo "[Info] Listing Contents"
+ls -l release-artifact/
+
+echo "[Info]"
 echo "[Info] Done."
 
