@@ -36,7 +36,7 @@ There are two methods of installation, which is by a pre-built RPM or by using a
 
 A. Download the RPM:
 
-    wget "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0-1.noarch.rpm"
+    wget -O apachetrans-1.0-1.noarch.rpm "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0-1.noarch.rpm"
 
 B. Install it by going:
 
@@ -46,7 +46,7 @@ B. Install it by going:
 
 A. Download & Extract the Zip
 
-    wget "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0.zip"
+    wget -O apachetrans-1.0.zip "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0.zip"
     unzip apachetrans-1.0.zip
     cd apachetrans
 
