@@ -18,45 +18,27 @@ The points that get pushed graphite by default are:
 
 Install
 -------------
-The following are the current rough install steps:
+There are two methods of installation, which is by a pre-built RPM or by using a Zip with the current release. Both are explain below.
 
-Note: It is recommended you have the environment variable of $JAVA_HOME set.
+**Note:** Ensure you have the environment variable of `$JAVA_HOME` set.
 
 ### RPM Method
 
-A. Download:
+A. Download the RPM:
 
-    install/apachetrans-1.0-1.noarch.rpm
+    wget "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0-1.noarch.rpm"
 
 B. Install it by going:
 
-    rpm -ivh apachetrans-1.0-1.noarch.rpm
-
-C. Modify `/etc/apachetrans/application.conf` to specify:
-
-    graphiteHost
-    graphitePort
-    executionTime
-    apaches:
-        metricPath
-        apacheUrl
-
-D. Start `apachetrans` with:
-
-    /etc/init.d/apachetrans.sh start
-
-E. If you see no errors, it has started up correct. You can follow the log:
-
-    tail -f /var/log/apachetrans/output.log
-
+    sudo rpm -ivh apachetrans-1.0-1.noarch.rpm
 
 ### Non-RPM Method
 
-A. Clone the repo:
+A. Download & Extract the Zip
 
-    cd ~
-    git clone https://github.com/welsh/apachetrans
-    cd apachetrans/
+    wget "https://github.com/welsh/apachetrans/releases/download/1.0.0/apachetrans-1.0.zip"
+    unzip apachetrans-1.0.zip
+    cd apachetrans
 
 B. Make the following directories:
 
@@ -64,11 +46,20 @@ B. Make the following directories:
 
 C. Copy install files into location:
 
-    sudo cp install/application.conf /etc/apachetrans
-    sudo cp install/apachetrans.jar /usr/share/apachetrans
-    sudo cp install/apachetrans.sh /etc/init.d/
+    sudo cp application.conf /etc/apachetrans
+    sudo cp apachetrans.jar /usr/share/apachetrans
+    sudo cp apachetrans.sh /etc/init.d/
 
-D. Modify `/etc/apachetrans/application.conf` to specify:
+D. Add Execute privilege to the `/etc/init.d/` script:
+
+    sudo chmod +x /etc/init.d/apachetrans.sh
+
+Configuration
+-------------
+
+Once installed, you need to follow the following steps to configure and start up:
+
+A. Modify `/etc/apachetrans/application.conf` to specify:
 
     graphiteHost
     graphitePort
@@ -77,33 +68,22 @@ D. Modify `/etc/apachetrans/application.conf` to specify:
         metricPath
         apacheUrl
 
-E. Add Execute privilege to the `/etc/init.d/` script:
+B. Start `apachetrans` with:
 
-    chmod +x /etc/init.d/apachetrans.sh
-
-F. Start `apachetrans` with:
-
-    /etc/init.d/apachetrans.sh start
+    sudo /etc/init.d/apachetrans.sh start
     
-G. If you see no errors, it has started up correct. You can follow the log:
+C. If you see no errors, it has started up correct. You can follow the log:
 
     tail -f /var/log/apachetrans/output.log
 
 
 Script Usage
 -------------
-Once installed, script usage is as follows:
+Script usage is as follows:
 
     sudo /etc/init.d/apachetrans {start|stop|restart|status}
+    
+**Note:** You may get a stale PID file if you kill -9 the process or apachetrans fails to start. To clean up just run:
 
-
-To Do
--------------
-1. Fix up /etc/init.d script. (PID file cleanup / checks need to be done.)
-2. Look into setting up under different user
-3. Tidy up how config is read
-4. Update ConfigUtility & ConfigUtilityTest to:
-    - Take in file name over-ride
-    - Cover more test cases
-    - Use relative testing paths so unit tests pass on unix
+    sudo /etc/init.d/apachetrans stop
 
