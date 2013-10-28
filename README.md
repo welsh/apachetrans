@@ -16,11 +16,21 @@ The points that get pushed graphite by default are:
     Uptime
 
 
+Prerequisites
+-------------
+In order to install properly, please ensure the following is setup on the server that will run `apachetrans`:
+
+* Java is installed
+* Environment variable of `$JAVA_HOME` is set.
+    
+And for the Apache Server that will be monitored, please ensure that the following is enabled in the main conf file:
+
+    ExtendedStatus on
+
+
 Install
 -------------
 There are two methods of installation, which is by a pre-built RPM or by using a Zip with the current release. Both are explain below.
-
-**Note:** Ensure you have the environment variable of `$JAVA_HOME` set.
 
 ### RPM Method
 
@@ -67,6 +77,8 @@ A. Modify `/etc/apachetrans/application.conf` to specify:
     apaches:
         metricPath
         apacheUrl
+        
+**Note:** You can view the [Configuration](https://github.com/welsh/apachetrans/wiki/Configuration) page for more details on configuring.
 
 B. Start `apachetrans` with:
 
