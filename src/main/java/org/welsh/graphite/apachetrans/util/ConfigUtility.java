@@ -23,16 +23,19 @@ public class ConfigUtility {
 	private static Logger log = LoggerFactory.getLogger(ConfigUtility.class);
 
 	private Map<String, Object> appSettings; 
+	private String confFile;
 	
-	@SuppressWarnings("unchecked")
 	public ConfigUtility() {
-
+		confFile = determineFolderPath() + determineFileName();
 	}
 	
+	public ConfigUtility(String confFile) {
+		this.confFile = confFile;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void loadConfiguration() throws InvalidConfigurationException, FileNotFoundException, IOException, ParseException {
 		appSettings = new HashMap<String, Object>();
-		
-		String confFile = determineFolderPath() + determineFileName();
 		
 		log.debug("Conf File: " + confFile);
 		
@@ -80,7 +83,7 @@ public class ConfigUtility {
 	public String determineFolderPath() {
 		String baseDir = System.getProperty(Config.SYS_CONF_DIR_PROPERTY);
 		
-		if(baseDir == null) {
+		if(baseDir == null || baseDir.trim().isEmpty()) {
 			baseDir = Config.DEFAULT_CONF_DIR;
 			log.debug("Defaulting to default baseDir.");
 		} else {
@@ -97,7 +100,7 @@ public class ConfigUtility {
 	public String determineFileName() {
 		String fileName = System.getProperty(Config.SYS_CONF_FILE_PROPERTY);
 		
-		if(fileName == null) {
+		if(fileName == null || fileName.trim().isEmpty()) {
 			fileName = Config.DEFAULT_CONF_FILE;
 			log.debug("Defaulting to default confFile.");
 		} else {
@@ -111,6 +114,10 @@ public class ConfigUtility {
 		ApacheServer apacheServer = new ApacheServer(
 				(String) apacheServerJson.get(Config.APACHE_URL), 
 				(String) apacheServerJson.get(Config.METRIC_PATH));
+		
+		// By Default, we pass all values as true.
+		// So they all get set to true by default
+		apacheServer.setAllReportingValues(true);
 		
 		Object tmp = apacheServerJson.get(Config.TOTAL_ACCESSES);
 		if(tmp != null) {
@@ -185,5 +192,13 @@ public class ConfigUtility {
 
 	public void setAppSettings(Map<String, Object> appSettings) {
 		this.appSettings = appSettings;
+	}
+
+	public String getConfFile() {
+		return confFile;
+	}
+
+	public void setConfFile(String confFile) {
+		this.confFile = confFile;
 	}
 }

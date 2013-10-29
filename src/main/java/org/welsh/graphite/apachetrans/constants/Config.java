@@ -32,7 +32,7 @@ public class Config {
 	/**
 	 * Defaults
 	 */
-	public static final String DEFAULT_CONF_DIR = "/etc/apachetrans";
+	public static final String DEFAULT_CONF_DIR = "/etc/apachetrans/";
 	public static final String DEFAULT_CONF_FILE = "application.conf";
 	public static final Long   DEFAULT_EXECUTION_TIME = 1L;
 }
