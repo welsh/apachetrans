@@ -36,18 +36,18 @@ There are two methods of installation, which is by a pre-built RPM or by using a
 
 A. Download the RPM:
 
-    wget -O apachetrans-1.0-1.noarch.rpm "https://github.com/welsh/apachetrans/releases/download/1.1.0/apachetrans-1.1-1.noarch.rpm"
+    wget -O apachetrans-1.1-1.noarch.rpm "https://github.com/welsh/apachetrans/releases/download/1.1.0/apachetrans-1.1-1.noarch.rpm"
 
 B. Install it by going:
 
-    sudo rpm -ivh apachetrans-1.0-1.noarch.rpm
+    sudo rpm -ivh apachetrans-1.1-1.noarch.rpm
 
 ### Non-RPM Method
 
 A. Download & Extract the Zip
 
-    wget -O apachetrans-1.0.zip "https://github.com/welsh/apachetrans/releases/download/1.1.0/apachetrans-1.1.zip"
-    unzip apachetrans-1.0.zip
+    wget -O apachetrans-1.1.zip "https://github.com/welsh/apachetrans/releases/download/1.1.0/apachetrans-1.1.zip"
+    unzip apachetrans-1.1.zip
     cd apachetrans
 
 B. Make the following directories:
