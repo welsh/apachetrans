@@ -27,6 +27,8 @@ public class GraphiteConnector {
 		log.debug("Sending Message To: {}:{}", graphiteHost, graphitePort);
 		String msg = createGraphiteMessage(apacheStatus, apacheServer);
 		
+		log.info("Sending Data Points: " + apacheServer.datapointsToSend());
+		
 		if(!msg.isEmpty()) {
 			try {
 				Socket socket = new Socket(graphiteHost, graphitePort); 
