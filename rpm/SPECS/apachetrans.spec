@@ -10,7 +10,7 @@
 %define        __os_install_post %{nil} 
 
 Name: apachetrans
-Version: 1.0	
+Version: 1.1	
 Release: 1
 Summary: Installs the apachetrans connector	
 
@@ -41,7 +41,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/apachetrans/application.conf
-%config(noreplace) /var/log/apachetrans/output.log
+/var/log/apachetrans/output.log
 /etc/init.d/apachetrans.sh
 /usr/share/apachetrans/apachetrans.jar
 
@@ -49,3 +49,5 @@ rm -rf %{buildroot}
 * Sun Oct 27 2013 David Welsh <david.welsh@welshh.com> 1.0-1
 - Initial RPM Creation
 
+* Sun Oct 27 2013 David Welsh <david.welsh@welshh.com> 1.1-1
+- Updating to 1.1 of apachetrans

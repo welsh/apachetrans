@@ -22,6 +22,18 @@ public class ApacheServer {
 		this.apacheUrl = apacheUrl;
 		this.metricPath = metricPath;
 	}
+	
+	public void setAllReportingValues(boolean value) {
+		reportTotalAccesses = value;
+		reportTotalkBytes = value;
+		reportUptime = value;
+		reportCpuLoad = value;
+		reportReqPerSec = value;
+		reportBytesPerSec = value;
+		reportBytesPerReq = value;
+		reportBusyWorkers = value;
+		reportIdleWorkers = value;
+	}
 
 	public String getApacheUrl() {
 		return apacheUrl;
@@ -109,6 +121,48 @@ public class ApacheServer {
 
 	public void setReportIdleWorkers(boolean reportIdleWorkers) {
 		this.reportIdleWorkers = reportIdleWorkers;
+	}
+	
+	public String datapointsToSend() {
+		StringBuilder sb = new StringBuilder("[");
+		
+		if(reportTotalAccesses) {
+			sb.append("reportTotalAccesses, ");
+		}
+		if(reportTotalkBytes) {
+			sb.append("reportTotalkBytes, ");
+		}
+		if(reportUptime) {
+			sb.append("reportUptime, ");
+		}
+		if(reportCpuLoad) {
+			sb.append("reportCpuLoad, ");
+		}
+		if(reportReqPerSec) {
+			sb.append("reportReqPerSec, ");
+		}
+		if(reportBytesPerSec) {
+			sb.append("reportBytesPerSec, ");
+		}
+		if(reportBytesPerReq) {
+			sb.append("reportBytesPerReq, ");
+		}
+		if(reportBusyWorkers) {
+			sb.append("reportBusyWorkers, ");
+		}
+		if(reportIdleWorkers) {
+			sb.append("reportIdleWorkers, ");
+		}
+		
+		String toReturn = sb.toString();
+		
+		if(toReturn.length() > 1) {
+			toReturn = toReturn.substring(0, sb.length() - 2);
+		} 
+		
+		toReturn += "]";
+		
+		return toReturn;
 	}
 
 	@Override

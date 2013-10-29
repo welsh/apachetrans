@@ -18,6 +18,7 @@ public class ServerJob implements Job {
 	
 	private static final Logger log = LoggerFactory.getLogger(ServerJob.class);
 
+	@SuppressWarnings("unchecked")
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		log.info("Starting Execution");
 		
@@ -29,16 +30,15 @@ public class ServerJob implements Job {
 			Integer graphitePort = (Integer) jobDataMap.get(Config.GRAPHITE_PORT);
 			
 			for(ApacheServer apacheServer : apacheServers) {
-				String metricPath = apacheServer.getMetricPath();
 				String apacheUrl = apacheServer.getApacheUrl();
 				
 				log.info("Getting Apache Info From: " + apacheUrl);
 				ApacheConnector apacheConnector = new ApacheConnector(apacheUrl);
 				ApacheStatus apacheStatus = apacheConnector.getApacheStatus();
 				
-				log.info("Sending To: " + graphiteHost + ":" + graphitePort + "/" + metricPath);
+				log.info("Sending To: " + graphiteHost + ":" + graphitePort + "/" + apacheServer.getMetricPath());
 				GraphiteConnector graphiteConnector = new GraphiteConnector(graphiteHost, graphitePort);
-				graphiteConnector.logToGraphite(apacheStatus, metricPath);
+				graphiteConnector.logToGraphite(apacheStatus, apacheServer);
 			}
 			
 		} catch (Exception e) {
