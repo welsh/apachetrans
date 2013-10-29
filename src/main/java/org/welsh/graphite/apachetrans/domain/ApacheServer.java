@@ -22,6 +22,18 @@ public class ApacheServer {
 		this.apacheUrl = apacheUrl;
 		this.metricPath = metricPath;
 	}
+	
+	public void setAllReportingValues(boolean value) {
+		reportTotalAccesses = value;
+		reportTotalkBytes = value;
+		reportUptime = value;
+		reportCpuLoad = value;
+		reportReqPerSec = value;
+		reportBytesPerSec = value;
+		reportBytesPerReq = value;
+		reportBusyWorkers = value;
+		reportIdleWorkers = value;
+	}
 
 	public String getApacheUrl() {
 		return apacheUrl;
