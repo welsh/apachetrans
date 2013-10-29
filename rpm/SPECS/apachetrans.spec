@@ -41,7 +41,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/apachetrans/application.conf
-%config(noreplace) /var/log/apachetrans/output.log
+/var/log/apachetrans/output.log
 /etc/init.d/apachetrans.sh
 /usr/share/apachetrans/apachetrans.jar
 
