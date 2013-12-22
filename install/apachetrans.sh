@@ -29,11 +29,11 @@ start() {
     EXEC=${EXEC:-"-jar $JAR_FILE"}
 
     if [ ! -z "$CONF_DIR" ]; then
-        EXEC=${EXEC:-"-jar -Dapachetrans.conf.dir=$CONF_DIR"}
+        EXEC="$EXEC -Dapachetrans.conf.dir=$CONF_DIR "
     fi
 
     if [ ! -z "$LOG_DIR" ]; then
-        EXEC=${EXEC:-"-jar -Dapachetrans.log.dir=$LOG_DIR"}
+        EXEC="$EXEC -Dapachetrans.log.dir=$LOG_DIR "
     fi
 
     $JAVA -server $JAVA_OPTS $EXEC 2>&1 &
